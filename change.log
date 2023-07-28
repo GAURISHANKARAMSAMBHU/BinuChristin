@@ -1,0 +1,140 @@
+class Test:
+    def __init__(self, name, low_range, high_range, unit, price):
+        self.name = name
+        self.low_range = low_range
+        self.high_range = high_range
+        self.unit = unit
+        self.price = price
+
+
+class TestManagementSystem:
+    def __init__(self):
+        self.tests = []
+        self.logged_in = False
+        self.logged_in_user = None
+
+    def login(self):
+        if self.logged_in:
+            print("Already logged in.")
+            return
+        username = input("Username: ")
+        if len(username) != 6:
+            print("Username has to be six characters long.")
+            return
+        password = input("Password: ")
+        if len(password) != 6:
+            print("Password has to be six characters long.")
+            return
+
+        # Perform actual login verification here, check credentials against DB.
+
+        self.logged_in = True
+        self.logged_in_user = username
+        print("Logged in successfully.")
+
+    def add_test(self):
+        if not self.logged_in:
+            print("You need to log in first.")
+            return
+
+        name = input("Test Name: ")
+        low_range = input("Low Range: ")
+        high_range = input("High Range: ")
+        unit = input("Unit: ")
+        price = input("Price: ")
+
+        # Perform validations on low_range, high_range, and price (numeric checks).
+
+        test = Test(name, low_range, high_range, unit, price)
+        self.tests.append(test)
+        print(f"Successfully added. TestID: {len(self.tests)}")
+
+    def view_tests(self):
+        if not self.logged_in:
+            print("You need to log in first.")
+            return
+
+        if not self.tests:
+            print("No tests available.")
+            return
+
+        print("List of Tests:")
+        for i, test in enumerate(self.tests, 1):
+            print(f"{i}. {test.name}")
+
+    def search_test(self):
+        if not self.logged_in:
+            print("You need to log in first.")
+            return
+
+        search_choice = input("How would you like to search for the test?\n1. By Test code\n2. Go to Manage Test Menu\n")
+        if search_choice == "1":
+            test_code = input("Enter Test code: ")
+            try:
+                test_code = int(test_code)
+            except ValueError:
+                print("Invalid input. Test code must be a number.")
+                return
+
+            if 1 <= test_code <= len(self.tests):
+                test = self.tests[test_code - 1]
+                print("Test details of entered Test code:")
+                print(f"Name: {test.name}")
+                print(f"Low Range: {test.low_range}")
+                print(f"High Range: {test.high_range}")
+                print(f"Unit: {test.unit}")
+                print(f"Price: {test.price}")
+
+                proceed_choice = input("How would you like to proceed?\n1. Edit Test\n2. Disable Test\n3. Go Back\n")
+                if proceed_choice == "1":
+                    new_price = input("Enter new Price: ")
+                    # Perform validations on new_price (numeric check).
+                    test.price = new_price
+                    print("Updated successfully.")
+                elif proceed_choice == "2":
+                    disable_choice = input("Do you want to disable the Test? (y/n): ")
+                    if disable_choice.lower() == "y":
+                        self.tests.remove(test)
+                        print("Successfully disabled.")
+                elif proceed_choice == "3":
+                    return
+                else:
+                    print("Wrong choice. Please choose an item from the menu.")
+            else:
+                print("Test does not exist.")
+        elif search_choice == "2":
+            return
+        else:
+            print("Invalid choice.")
+
+    def main_menu(self):
+        while True:
+            print("WELCOME TO CLINICAL MANAGEMENT SYSTEM")
+            print("TEST MANAGEMENT DEPARTMENT\n LabTechnician:SAMBHU S THAMPAN")
+            print("\nTest Management Menu:")
+            print("1. User Login and Log File creation")
+            print("2. Add Test")
+            print("3. See List of Test")
+            print("4. Search and View Test")
+            print("5. Go to Main Menu")
+
+            choice = input("Enter your choice: ")
+
+            if choice == "1":
+                self.login()
+            elif choice == "2":
+                self.add_test()
+            elif choice == "3":
+                self.view_tests()
+            elif choice == "4":
+                self.search_test()
+            elif choice == "5":
+                print("Going back to the Main Menu.")
+                return
+            else:
+                print("Invalid choice.")
+
+
+if __name__ == "__main__":
+    test_management_system = TestManagementSystem()
+    test_management_system.main_menu()
